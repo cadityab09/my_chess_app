@@ -77,6 +77,8 @@ class _MatchViewState extends State<MatchView> {
         titleTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
       ),
       body: Stack(
+
+        alignment: Alignment.center,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -484,36 +486,85 @@ class _MatchViewState extends State<MatchView> {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text((MatchView.whiteCheck)?'white check':(MatchView.blackCheck)?'black Check':'', style: TextStyle(color: Colors.white),),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text((MatchView.win=='white')?'white win':(MatchView.win=='black')?'black win':'', style: TextStyle(color: Colors.white),),
+                child: Text((MatchView.whiteCheck && MatchView.win=='')?'white check':(MatchView.blackCheck && MatchView.win=='')?'black Check':'', style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
-          (MatchView.win=='')?Center(
-            child: Stack(
+          (MatchView.win=='white')?
+          Padding(
+            padding: const EdgeInsets.only(top: 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.56,
-                  width: MediaQuery.of(context).size.width * 0.78,
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.50,
+                        width: MediaQuery.of(context).size.width * 0.95,
 
-                  decoration: BoxDecoration(
-                    color: CupertinoColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(width: 1, color: Colors.black),
-                  ),
-                ),
-                CircleAvatar(
-                  radius: 50,
-                  child: Image(
-                    image: AssetImage('assets/chess_icons/black/rook.png'),
-                  ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(width: 1, color: Colors.black),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.170,),
+                            Center(child: Text('Congratulation',style: TextStyle(fontSize: 50),)),
+                            Text('White win',style: TextStyle(fontSize: 45),),
+                          ],
+                        ),
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/win_trophee.png'),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ):Text(''),
+          ):(MatchView.win=='black')?
+          Padding(
+            padding: const EdgeInsets.only(top: 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.50,
+                        width: MediaQuery.of(context).size.width * 0.95,
+
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(width: 1, color: Colors.black),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.170,),
+                            Center(child: Text('Congratulation',style: TextStyle(fontSize: 50),)),
+                            Text('Black win',style: TextStyle(fontSize: 45),),
+                          ],
+                        ),
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/win_trophee.png'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ):Container()
         ],
       )
     );
