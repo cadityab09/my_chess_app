@@ -672,13 +672,15 @@ class ModelPosition {
             r=list[i]['row'];
             c=list[i]['col'];
             if(aliveList[r][c]==null || aliveList[row][column]['color']!=aliveList[r][c]['color']){
+
               if(isSafeArea(aliveList, r, c, aliveList[row][column]['color'])) {
+
                 tempList = aliveList.map((innerList) => List<dynamic?>.from(innerList)).toList();
                 tempList[r][c]=tempList[row][column];
                 tempList[row][column]=null;
                 isCheckRow=(MatchView.isWhiteMove)?MatchView.whiteKingRow:MatchView.blackKingRow;
                 isCheckCol=(MatchView.isWhiteMove)?MatchView.whiteKingCol:MatchView.blackKingCol;
-                if(isCheck(tempList, isCheckRow, isCheckCol, aliveList[isCheckRow][isCheckCol]['color'])==false) {
+                if(isCheck(tempList, r, c, aliveList[isCheckRow][isCheckCol]['color'])==false) {
                   highlight[r][c] = true;
                 }
               }
