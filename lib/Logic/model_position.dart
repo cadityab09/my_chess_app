@@ -930,14 +930,14 @@ class ModelPosition {
 
 
     if (color == 'white' && (
-        (aliveList[row + 1][column + 1] != null && aliveList[row+1][column+1]['name'].contains('pawn') && aliveList[row+1][column+1]['color'] != color) ||
-            (aliveList[row + 1][column -1] != null && aliveList[row+1][column-1]['name'].contains('pawn') && aliveList[row+1][column-1]['color'] != color) )) {
+        ( ((0<=(row+1) && (row+1)<=7) && (0<=(column+1) && (column+1)<=7)) && aliveList[row + 1][column + 1] != null && aliveList[row+1][column+1]['name'].contains('pawn') && aliveList[row+1][column+1]['color'] != color) ||
+            (((0<=(row+1) && (row+1)<=7) && (0<=(column-1) && (column-1)<=7)) && aliveList[row + 1][column -1] != null && aliveList[row+1][column-1]['name'].contains('pawn') && aliveList[row+1][column-1]['color'] != color) )) {
       return false;
     }
 
     if (color == 'black' && (
-        (aliveList[row - 1][column + 1] != null && aliveList[row-1][column+1]['name'].contains('pawn') && aliveList[row-1][column+1]['color'] != color) ||
-            (aliveList[row - 1][column -1] != null && aliveList[row-1][column-1]['name'].contains('pawn') && aliveList[row-1][column-1]['color'] != color) )) {
+        (((0<=(row-1) && (row-1)<=7) && (0<=(column+1) && (column+1)<=7)) && aliveList[row - 1][column + 1] != null && aliveList[row-1][column+1]['name'].contains('pawn') && aliveList[row-1][column+1]['color'] != color) ||
+            (((0<=(row-1) && (row-1)<=7) && (0<=(column-1) && (column-1)<=7)) && aliveList[row - 1][column -1] != null && aliveList[row-1][column-1]['name'].contains('pawn') && aliveList[row-1][column-1]['color'] != color) )) {
       return false;
     }
 
@@ -1777,7 +1777,7 @@ class ModelPosition {
                 tempList[row][column]=null;
                 isCheckRow=(MatchView.isWhiteMove)?MatchView.whiteKingRow:MatchView.blackKingRow;
                 isCheckCol=(MatchView.isWhiteMove)?MatchView.whiteKingCol:MatchView.blackKingCol;
-                if(isCheck(tempList, isCheckRow, isCheckCol, aliveList[isCheckRow][isCheckCol]['color'])==false) {
+                if(isCheck(tempList, r, c, aliveList[isCheckRow][isCheckCol]['color'])==false) {
                   return true;
                 }
               }
