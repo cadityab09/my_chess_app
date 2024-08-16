@@ -7,6 +7,7 @@ class ModelPosition {
   static List<List<dynamic?>> aliveList = List.generate(8, (_) => List.filled(8, null));
 
   static List<List<dynamic?>> getPosition(){
+    aliveList = List.generate(8, (_) => List.filled(8, null));
     List<Map<String, dynamic>> finalList;
     List<Map<String, dynamic>> whiteList=WhiteModel.getPosition();
     List<Map<String, dynamic>> blackList=BlackModel.getPosition();
@@ -1106,14 +1107,14 @@ class ModelPosition {
 
 
     if (color == 'white' && (
-        (aliveList[row + 1][column + 1] != null && aliveList[row+1][column+1]['name'].contains('pawn') && aliveList[row+1][column+1]['color'] != color) ||
-            (aliveList[row + 1][column -1] != null && aliveList[row+1][column-1]['name'].contains('pawn') && aliveList[row+1][column-1]['color'] != color) )) {
+        ( ((0<=(row+1) && (row+1)<=7) && (0<=(column+1) && (column+1)<=7)) && aliveList[row + 1][column + 1] != null && aliveList[row+1][column+1]['name'].contains('pawn') && aliveList[row+1][column+1]['color'] != color) ||
+            ( ((0<=(row+1) && (row+1)<=7) && (0<=(column-1) && (column-1)<=7)) && aliveList[row + 1][column -1] != null && aliveList[row+1][column-1]['name'].contains('pawn') && aliveList[row+1][column-1]['color'] != color) )) {
       return true;
     }
 
     if (color == 'black' && (
-        (aliveList[row - 1][column + 1] != null && aliveList[row-1][column+1]['name'].contains('pawn') && aliveList[row-1][column+1]['color'] != color) ||
-            (aliveList[row - 1][column -1] != null && aliveList[row-1][column-1]['name'].contains('pawn') && aliveList[row-1][column-1]['color'] != color) )) {
+        ( ((0<=(row-1) && (row-1)<=7) && (0<=(column+1) && (column+1)<=7)) && aliveList[row - 1][column + 1] != null && aliveList[row-1][column+1]['name'].contains('pawn') && aliveList[row-1][column+1]['color'] != color) ||
+            ( ((0<=(row-1) && (row-1)<=7) && (0<=(column-1) && (column-1)<=7)) && aliveList[row - 1][column -1] != null && aliveList[row-1][column-1]['name'].contains('pawn') && aliveList[row-1][column-1]['color'] != color) )) {
       return true;
     }
 
