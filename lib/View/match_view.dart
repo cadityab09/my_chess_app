@@ -331,8 +331,12 @@ class _MatchViewState extends State<MatchView> {
                                                     child: (aliveList[row][column]==null)? (isHighlight &&(highlight[row][column]==true)?Icon(Icons.circle,color: Colors.white,):Text(''))
                                                         :Transform.rotate(
                                                       angle: ((MatchView.whiteView && aliveList[row][column]['color']=='black') || (!MatchView.whiteView && aliveList[row][column]['color']=='white'))?3.14:0,
-                                                      child: Image(image: AssetImage(aliveList[row][column]['image']),
-                                                        color:  (aliveList[row][column]['color']=='white')?Colors.white70:Colors.black87,
+                                                      child: Transform(
+                                                        alignment: Alignment.center,
+                                                        transform: (!MatchView.whiteView)?(Matrix4.identity()..scale(-1.0, 1.0)):Matrix4.identity(),
+                                                        child: Image(image: AssetImage(aliveList[row][column]['image']),
+                                                          color:  (aliveList[row][column]['color']=='white')?Colors.white70:Colors.black87,
+                                                        ),
                                                       ),
                                                     )
                                                 ),
