@@ -26,6 +26,7 @@ class MatchView extends StatefulWidget {
   static List<List<dynamic?>> progressList=[];
   static int progressListUndo=-1;
   static int progressListRedo=-1;
+  static bool dispWin=true;
 
   const MatchView({super.key});
 
@@ -50,6 +51,7 @@ class _MatchViewState extends State<MatchView> {
 
 
   List<List<dynamic?>> aliveList= List.generate(8, (_) => List.filled(8, null));
+  List<List<dynamic?>> finalList= List.generate(8, (_) => List.filled(8, null));
   List<List<bool>> highlight=List.generate(8, (_) => List.filled(8, false));
 
   @override
@@ -135,184 +137,260 @@ class _MatchViewState extends State<MatchView> {
                                     return GestureDetector(
 
                                         onTap: (){
-                                          if(isHighlight){
-                                            setState(() {
-                                              if(highlight[row][column]){
-                                                if(isInPassent==true &&  aliveList[row][column]==null && (aliveList[isSelectedRow][isSelectedCol]['name'].contains('pawn')) && (isSelectedCol!=column)){
-                                                  if(aliveList[isSelectedRow][isSelectedCol]['color']=='white'){
-                                                    MatchView.progressListUndo++;
-                                                    if(MatchView.progressListUndo<MatchView.progressList.length && MatchView.progressList[MatchView.progressListUndo]!=null){
-                                                      MatchView.progressListRedo=MatchView.progressListUndo;
-                                                      MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row-1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
+                                          if(MatchView.win==''){
+                                            if(isHighlight){
+                                              setState(() {
+                                                if(highlight[row][column]){
+                                                  if(isInPassent==true &&  aliveList[row][column]==null && (aliveList[isSelectedRow][isSelectedCol]['name'].contains('pawn')) && (isSelectedCol!=column)){
+                                                    if(aliveList[isSelectedRow][isSelectedCol]['color']=='white'){
+                                                      MatchView.progressListUndo++;
+                                                      if(MatchView.progressListUndo<MatchView.progressList.length && MatchView.progressList[MatchView.progressListUndo]!=null){
+                                                        MatchView.progressListRedo=MatchView.progressListUndo;
+                                                        MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row-1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
+                                                      }
+                                                      else {
+                                                        MatchView.progressListRedo++;
+                                                        MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row-1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
+                                                      }
+                                                      aliveList[row-1][column]=null;
+                                                      dispInPassent=true;
+                                                      startTimer();
                                                     }
-                                                    else {
-                                                      MatchView.progressListRedo++;
-                                                      MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row-1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
+                                                    if(aliveList[isSelectedRow][isSelectedCol]['color']=='black'){
+                                                      MatchView.progressListUndo++;
+                                                      if(MatchView.progressListUndo<MatchView.progressList.length && MatchView.progressList[MatchView.progressListUndo]!=null){
+                                                        MatchView.progressListRedo=MatchView.progressListUndo;
+                                                        MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row+1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
+                                                      }
+                                                      else {
+                                                        MatchView.progressListRedo++;
+                                                        MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row+1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
+                                                      }
+                                                      aliveList[row+1][column]=null;
+                                                      dispInPassent=true;
+                                                      startTimer();
                                                     }
-                                                    aliveList[row-1][column]=null;
-                                                    dispInPassent=true;
-                                                    startTimer();
                                                   }
-                                                  if(aliveList[isSelectedRow][isSelectedCol]['color']=='black'){
+                                                  else{
+                                                    isInPassent=false;
+                                                  }
+
+                                                  if(isInPassent==true){
+                                                    isInPassent=false;
+                                                    inPassentRow=-1;
+                                                    inPassentCol=-1;
+                                                  }else {
+
                                                     MatchView.progressListUndo++;
                                                     if(MatchView.progressListUndo<MatchView.progressList.length && MatchView.progressList[MatchView.progressListUndo]!=null){
                                                       MatchView.progressListRedo=MatchView.progressListUndo;
-                                                      MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row+1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
+                                                      MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,null, null, null,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
                                                     }
-                                                    else {
+                                                    else{
                                                       MatchView.progressListRedo++;
-                                                      MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,aliveList[row-1][column], row+1, column,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
+                                                      MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,null, null, null,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
                                                     }
-                                                    aliveList[row+1][column]=null;
-                                                    dispInPassent=true;
-                                                    startTimer();
+                                                  }
+
+                                                  aliveList[row][column]=(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wpawn') && row==7)||(aliveList[isSelectedRow][isSelectedCol]['name'].contains('bpawn') && row==0)?null:aliveList[isSelectedRow][isSelectedCol];
+
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('king')){
+                                                    if((isSelectedCol-column).abs()==2){
+                                                      if(isSelectedCol<column){
+                                                        aliveList[row][column-1]=aliveList[row][column+1];
+                                                        aliveList[row][column+1]=null;
+                                                      }
+                                                      else{
+                                                        aliveList[row][column+1]=aliveList[row][column-2];
+                                                        aliveList[row][column-2]=null;
+                                                      }
+                                                    }
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('bking')){
+                                                    MatchView.blackCastleLeft=false;
+                                                    MatchView.blackCastleRight=false;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wking')){
+                                                    MatchView.whiteCastleLeft=false;
+                                                    MatchView.whiteCastleRight=false;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wlrook')){
+                                                    MatchView.whiteCastleLeft=false;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wrrook')){
+                                                    MatchView.whiteCastleRight=false;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('blrook')){
+                                                    MatchView.blackCastleRight=false;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('brrook')){
+                                                    MatchView.blackCastleLeft=false;
+                                                  }
+
+                                                  MatchView.whiteCheck=false;
+                                                  MatchView.blackCheck=false;
+                                                  ((aliveList[isSelectedRow][isSelectedCol]['name'].contains('wpawn') && row==7))||((aliveList[isSelectedRow][isSelectedCol]['name'].contains('bpawn') && row==0))?isPromotion=true:isPromotion=false;
+                                                  if(isPromotion){
+                                                    isPromotionRow=row;
+                                                    isPromotionCol=column;
+                                                  }
+                                                  if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('pawn') && (isSelectedRow-row).abs()==2
+                                                      && ((column-1>=0 && aliveList[row][column-1]!=null && aliveList[row][column-1]['name'].contains('pawn') && aliveList[isSelectedRow][isSelectedCol]['color']!=aliveList[row][column-1]['color']) ||
+                                                          (column+1<=7 && aliveList[row][column+1]!=null &&  aliveList[row][column+1]['name'].contains('pawn') && aliveList[isSelectedRow][isSelectedCol]['color']!=aliveList[row][column+1]['color']))
+                                                  ){
+                                                    isInPassent=true;
+                                                    inPassentRow=row;
+                                                    inPassentCol=column;
+                                                  }
+                                                  aliveList[isSelectedRow][isSelectedCol]=null;
+                                                  MatchView.isWhiteMove=!MatchView.isWhiteMove;
+                                                  if(MatchView.isWhiteMove) {
+                                                    if(ModelPosition.isCheck(aliveList, MatchView.whiteKingRow, MatchView.whiteKingCol, 'white')){
+                                                      MatchView.whiteCheck=true;
+                                                      bool ch=false;
+                                                      List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
+                                                      for(int i=0; i<8; i++) {
+                                                        for(int j=0; j<8; j++) {
+                                                          if(aliveList[i][j]!=null && aliveList[i][j]['color']=='white'){
+                                                            if(ModelPosition.isNotCheckmate(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol)){
+                                                              ch=true;
+                                                              break;
+                                                            }
+                                                          }
+                                                        }
+                                                        if(ch==true){
+                                                          break;
+                                                        }
+                                                      }
+                                                      if(ch==false){
+                                                        MatchView.win='black';
+                                                        finalList=aliveList.map((innerList) => List<dynamic?>.from(innerList)).toList();
+                                                      }
+                                                    }
+                                                    else{
+                                                      bool ch=true;
+                                                      List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
+                                                      for(int i=0; i<8; i++) {
+                                                        for(int j=0; j<8; j++) {
+                                                          if(aliveList[i][j]!=null && aliveList[i][j]['color']=='white'){
+                                                            ModelPosition.highlightCol(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol);
+                                                            for(int l=0; l<8; l++) {
+                                                              for (int m = 0; m < 8; m++) {
+                                                                print(tempHighlight[l][m]);
+                                                                if(tempHighlight[l][m]==true) {
+                                                                  ch = false;
+                                                                  break;
+                                                                }
+                                                              }
+                                                              if(ch==false){
+                                                                break;
+                                                              }
+                                                            }
+                                                          }
+                                                          if(ch==false){
+                                                            break;
+                                                          }
+                                                        }
+                                                        if(ch==false){
+                                                          break;
+                                                        }
+                                                      }
+                                                      if(ch==true){
+                                                        MatchView.win='tie';
+                                                        finalList=aliveList.map((innerList) => List<dynamic?>.from(innerList)).toList();
+                                                      }
+                                                    }
+                                                  }else {
+                                                    if(ModelPosition.isCheck(aliveList, MatchView.blackKingRow, MatchView.blackKingCol, 'black')){
+                                                      MatchView.blackCheck=true;
+                                                      bool ch=false;
+                                                      List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
+                                                      for(int i=0; i<8; i++) {
+                                                        for(int j=0; j<8; j++) {
+                                                          if(aliveList[i][j]!=null && aliveList[i][j]['color']=='black'){
+                                                            if(ModelPosition.isNotCheckmate(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol)){
+                                                              ch=true;
+                                                              break;
+                                                            }
+                                                          }
+                                                        }
+                                                        if(ch==true){
+                                                          break;
+                                                        }
+                                                      }
+                                                      if(ch==false){
+                                                        MatchView.win='white';
+                                                        finalList=aliveList.map((innerList) => List<dynamic?>.from(innerList)).toList();
+                                                      }
+                                                    }
+                                                    else{
+                                                      bool ch=true;
+                                                      List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
+                                                      for(int i=0; i<8; i++) {
+                                                        for(int j=0; j<8; j++) {
+                                                          if(aliveList[i][j]!=null && aliveList[i][j]['color']=='black'){
+                                                            ModelPosition.highlightCol(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol);
+                                                            for(int l=0; l<8; l++) {
+                                                              for (int m = 0; m < 8; m++) {
+                                                                print(tempHighlight[l][m]);
+                                                                if(tempHighlight[l][m]==true) {
+                                                                  ch = false;
+                                                                  break;
+                                                                }
+                                                              }
+                                                              if(ch==false){
+                                                                break;
+                                                              }
+                                                            }
+                                                          }
+                                                          if(ch==false){
+                                                            break;
+                                                          }
+                                                        }
+                                                        if(ch==false){
+                                                          break;
+                                                        }
+                                                      }
+                                                      if(ch==true){
+                                                        MatchView.win='tie';
+                                                        finalList=aliveList.map((innerList) => List<dynamic?>.from(innerList)).toList();
+                                                      }
+                                                    }
+                                                  }
+
+                                                }
+                                                highlight=List.generate(8, (_) => List.filled(8, false));
+                                                isSelectedRow=55;
+                                                isSelectedCol=55;
+                                                isHighlight=false;
+                                              });
+                                            }
+                                            else if(aliveList[row][column]!=null){
+                                              setState(() {
+                                                if(MatchView.isWhiteMove){
+                                                  if(aliveList[row][column]['color']=="white"){
+                                                    isSelectedRow =row;
+                                                    isSelectedCol =column;
+                                                    ModelPosition.highlightCol(aliveList,highlight,row, column,isInPassent,inPassentRow,inPassentCol);
+                                                    isHighlight=true;
                                                   }
                                                 }
                                                 else{
-                                                  isInPassent=false;
-                                                }
-
-                                                if(isInPassent==true){
-                                                  isInPassent=false;
-                                                  inPassentRow=-1;
-                                                  inPassentCol=-1;
-                                                }else {
-
-                                                  MatchView.progressListUndo++;
-                                                  if(MatchView.progressListUndo<MatchView.progressList.length && MatchView.progressList[MatchView.progressListUndo]!=null){
-                                                    MatchView.progressListRedo=MatchView.progressListUndo;
-                                                    MatchView.progressList[MatchView.progressListUndo]=[aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,null, null, null,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null];
-                                                  }
-                                                  else{
-                                                    MatchView.progressListRedo++;
-                                                    MatchView.progressList.add([aliveList[isSelectedRow][isSelectedCol],isSelectedRow,isSelectedCol, aliveList[row][column],row, column,null, null, null,MatchView.isWhiteMove,MatchView.whiteCastleLeft,MatchView.whiteCastleRight, MatchView.blackCastleLeft, MatchView.blackCastleRight,null]);
+                                                  if(aliveList[row][column]['color']=="black"){
+                                                    isSelectedRow =row;
+                                                    isSelectedCol =column;
+                                                    ModelPosition.highlightCol(aliveList,highlight,row, column,isInPassent,inPassentRow,inPassentCol);
+                                                    isHighlight=true;
                                                   }
                                                 }
 
-                                                aliveList[row][column]=(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wpawn') && row==7)||(aliveList[isSelectedRow][isSelectedCol]['name'].contains('bpawn') && row==0)?null:aliveList[isSelectedRow][isSelectedCol];
-
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('king')){
-                                                  if((isSelectedCol-column).abs()==2){
-                                                    if(isSelectedCol<column){
-                                                      aliveList[row][column-1]=aliveList[row][column+1];
-                                                      aliveList[row][column+1]=null;
-                                                    }
-                                                    else{
-                                                      aliveList[row][column+1]=aliveList[row][column-2];
-                                                      aliveList[row][column-2]=null;
-                                                    }
-                                                  }
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('bking')){
-                                                  MatchView.blackCastleLeft=false;
-                                                  MatchView.blackCastleRight=false;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wking')){
-                                                  MatchView.whiteCastleLeft=false;
-                                                  MatchView.whiteCastleRight=false;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wlrook')){
-                                                  MatchView.whiteCastleLeft=false;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('wrrook')){
-                                                  MatchView.whiteCastleRight=false;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('blrook')){
-                                                  MatchView.blackCastleRight=false;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('brrook')){
-                                                  MatchView.blackCastleLeft=false;
-                                                }
-
-                                                MatchView.whiteCheck=false;
-                                                MatchView.blackCheck=false;
-                                                ((aliveList[isSelectedRow][isSelectedCol]['name'].contains('wpawn') && row==7))||((aliveList[isSelectedRow][isSelectedCol]['name'].contains('bpawn') && row==0))?isPromotion=true:isPromotion=false;
-                                                if(isPromotion){
-                                                  isPromotionRow=row;
-                                                  isPromotionCol=column;
-                                                }
-                                                if(aliveList[isSelectedRow][isSelectedCol]['name'].contains('pawn') && (isSelectedRow-row).abs()==2
-                                                && ((column-1>=0 && aliveList[row][column-1]!=null && aliveList[row][column-1]['name'].contains('pawn') && aliveList[isSelectedRow][isSelectedCol]['color']!=aliveList[row][column-1]['color']) ||
-                                                        (column+1<=7 && aliveList[row][column+1]!=null &&  aliveList[row][column+1]['name'].contains('pawn') && aliveList[isSelectedRow][isSelectedCol]['color']!=aliveList[row][column+1]['color']))
-                                                ){
-                                                  isInPassent=true;
-                                                  inPassentRow=row;
-                                                  inPassentCol=column;
-                                                }
-                                                aliveList[isSelectedRow][isSelectedCol]=null;
-                                                MatchView.isWhiteMove=!MatchView.isWhiteMove;
-                                                if(MatchView.isWhiteMove) {
-                                                  if(ModelPosition.isCheck(aliveList, MatchView.whiteKingRow, MatchView.whiteKingCol, 'white')){
-                                                    MatchView.whiteCheck=true;
-                                                    bool ch=false;
-                                                    List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
-                                                    for(int i=0; i<8; i++) {
-                                                      for(int j=0; j<8; j++) {
-                                                        if(aliveList[i][j]!=null && aliveList[i][j]['color']=='white'){
-                                                          if(ModelPosition.isNotCheckmate(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol)){
-                                                            ch=true;
-                                                            break;
-                                                          }
-                                                        }
-                                                      }
-                                                      if(ch==true){
-                                                        break;
-                                                      }
-                                                    }
-                                                    if(ch==false){
-                                                      MatchView.win='black';
-                                                    }
-                                                  }
-                                                }else {
-                                                  if(ModelPosition.isCheck(aliveList, MatchView.blackKingRow, MatchView.blackKingCol, 'black')){
-                                                    MatchView.blackCheck=true;
-                                                    bool ch=false;
-                                                    List<List<bool>> tempHighlight=List.generate(8, (_) => List.filled(8, false));
-                                                    for(int i=0; i<8; i++) {
-                                                      for(int j=0; j<8; j++) {
-                                                        if(aliveList[i][j]!=null && aliveList[i][j]['color']=='black'){
-                                                          if(ModelPosition.isNotCheckmate(aliveList, tempHighlight, i, j, isInPassent, inPassentRow, inPassentCol)){
-                                                            ch=true;
-                                                            break;
-                                                          }
-                                                        }
-                                                      }
-                                                      if(ch==true){
-                                                        break;
-                                                      }
-                                                    }
-                                                    if(ch==false){
-                                                      MatchView.win='white';
-                                                    }
-                                                  }
-                                                }
-
-                                              }
-                                              highlight=List.generate(8, (_) => List.filled(8, false));
-                                              isSelectedRow=55;
-                                              isSelectedCol=55;
-                                              isHighlight=false;
-                                            });
+                                              });
+                                            }
                                           }
-                                          else if(aliveList[row][column]!=null){
+                                          else{
                                             setState(() {
-                                              if(MatchView.isWhiteMove){
-                                                if(aliveList[row][column]['color']=="white"){
-                                                  isSelectedRow =row;
-                                                  isSelectedCol =column;
-                                                  ModelPosition.highlightCol(aliveList,highlight,row, column,isInPassent,inPassentRow,inPassentCol);
-                                                  isHighlight=true;
-                                                }
-                                              }
-                                              else{
-                                                if(aliveList[row][column]['color']=="black"){
-                                                  isSelectedRow =row;
-                                                  isSelectedCol =column;
-                                                  ModelPosition.highlightCol(aliveList,highlight,row, column,isInPassent,inPassentRow,inPassentCol);
-                                                  isHighlight=true;
-                                                }
-                                              }
-
+                                              MatchView.dispWin=true;
+                                              aliveList=finalList.map((innerList) => List<dynamic?>.from(innerList)).toList();
                                             });
                                           }
                                         },
@@ -550,7 +628,7 @@ class _MatchViewState extends State<MatchView> {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Padding(
+              (MatchView.win=='' || MatchView.dispWin==false)?Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   width: double.infinity,
@@ -595,6 +673,7 @@ class _MatchViewState extends State<MatchView> {
                               isHighlight=false;
                               isInPassent=false;
                               dispInPassent=false;
+                              MatchView.dispWin=true;
                             });
                           },
                           child: Icon(Icons.replay_sharp, size: 40,),
@@ -716,10 +795,10 @@ class _MatchViewState extends State<MatchView> {
                     ),
                   ),
                 ),
-              ),
+              ):Container(),
             ],
           ),
-          (MatchView.win=='white')?
+          (MatchView.win=='white' && MatchView.dispWin)?
           Padding(
             padding: const EdgeInsets.only(top: 90),
             child: Column(
@@ -744,6 +823,30 @@ class _MatchViewState extends State<MatchView> {
                             SizedBox(height: MediaQuery.of(context).size.height * 0.170,),
                             Center(child: Text('Congratulation',style: TextStyle(fontSize: 50),)),
                             Text('White win',style: TextStyle(fontSize: 45),),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  MatchView.dispWin=false;
+                                });
+                              },
+                              child: Container(
+                                width: 250, // Width of the button
+                                height: 60, // Height of the button
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue, // Background color
+                                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                                ),
+                                child: Text(
+                                  'view board',
+                                  style: TextStyle(
+                                    color: Colors.white, // Text color
+                                    fontSize: 20, // Text size
+                                    fontWeight: FontWeight.bold, // Text weight
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -756,7 +859,7 @@ class _MatchViewState extends State<MatchView> {
                 ),
               ],
             ),
-          ):(MatchView.win=='black')?
+          ):(MatchView.win=='black' && MatchView.dispWin)?
           Padding(
             padding: const EdgeInsets.only(top: 90),
             child: Column(
@@ -778,9 +881,34 @@ class _MatchViewState extends State<MatchView> {
                         ),
                         child: Column(
                           children: [
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.170,),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.150,),
                             Center(child: Text('Congratulation',style: TextStyle(fontSize: 50),)),
                             Text('Black win',style: TextStyle(fontSize: 45),),
+                            SizedBox(height: 30,),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  MatchView.dispWin=false;
+                                });
+                              },
+                              child: Container(
+                                width: 250, // Width of the button
+                                height: 60, // Height of the button
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey, // Background color
+                                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                                ),
+                                child: Text(
+                                  'view board',
+                                  style: TextStyle(
+                                    color: Colors.white, // Text color
+                                    fontSize: 20, // Text size
+                                    fontWeight: FontWeight.bold, // Text weight
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -793,7 +921,69 @@ class _MatchViewState extends State<MatchView> {
                 ),
               ],
             ),
-          ):Container()
+          ):(MatchView.win=='tie' && MatchView.dispWin)?
+          Padding(
+            padding: const EdgeInsets.only(top: 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.50,
+                        width: MediaQuery.of(context).size.width * 0.95,
+
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(width: 1, color: Colors.black),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.150,),
+                            Center(child: Text('OOPS',style: TextStyle(fontSize: 50),)),
+                            Text('Game Tie',style: TextStyle(fontSize: 45),),
+                            SizedBox(height: 30,),
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  MatchView.dispWin=false;
+                                });
+                              },
+                              child: Container(
+                                width: 250, // Width of the button
+                                height: 60, // Height of the button
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey, // Background color
+                                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                                ),
+                                child: Text(
+                                  'view board',
+                                  style: TextStyle(
+                                    color: Colors.white, // Text color
+                                    fontSize: 20, // Text size
+                                    fontWeight: FontWeight.bold, // Text weight
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/tie.png'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ):Container(),
         ],
       )
     );
